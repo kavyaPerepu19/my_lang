@@ -1,0 +1,7 @@
+/home/kavya/Desktop/my_lang/build/CMakeFiles/intrinsics_gen.dir
+/home/kavya/Desktop/my_lang/build/CMakeFiles/omp_gen.dir
+/home/kavya/Desktop/my_lang/build/CMakeFiles/acc_gen.dir
+/home/kavya/Desktop/my_lang/build/CMakeFiles/RISCVTargetParserTableGen.dir
+/home/kavya/Desktop/my_lang/build/CMakeFiles/my_lang.dir
+/home/kavya/Desktop/my_lang/build/CMakeFiles/edit_cache.dir
+/home/kavya/Desktop/my_lang/build/CMakeFiles/rebuild_cache.dir
