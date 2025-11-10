@@ -1,9 +1,9 @@
-Custom Compiler Frontend (C++ + LLVM)
+#Custom Compiler Frontend (C++ + LLVM)
 
 A modern compiler front-end implemented in C++17 that translates a custom programming language into LLVM Intermediate Representation (IR).
 It demonstrates key compiler design concepts — lexical analysis, recursive descent parsing, AST construction, and LLVM-based code generation — using the Visitor Pattern for modularity.
 
-🚀 Overview
+#Overview
 
 This project implements a complete mini compiler pipeline, from source code to LLVM IR:
 
