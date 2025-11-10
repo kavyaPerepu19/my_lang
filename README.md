@@ -1,56 +1,65 @@
-#Custom Compiler Frontend (C++ + LLVM)
 
-A modern compiler front-end implemented in C++17 that translates a custom programming language into LLVM Intermediate Representation (IR).
-It demonstrates key compiler design concepts — lexical analysis, recursive descent parsing, AST construction, and LLVM-based code generation — using the Visitor Pattern for modularity.
 
-#Overview
+# Custom Compiler Frontend (C++ + LLVM)
 
-This project implements a complete mini compiler pipeline, from source code to LLVM IR:
+A modern compiler front-end implemented in **C++17** that translates a custom programming language into **LLVM Intermediate Representation (IR)**.
+It demonstrates key compiler design concepts such as **lexical analysis**, **recursive descent parsing**, **AST construction**, and **LLVM-based code generation**, using the **Visitor Pattern** for modularity.
 
-Stage	Description	Output
-Lexer	Converts source code into tokens	Token stream
-Parser	Builds syntax tree using recursive descent	Abstract Syntax Tree (AST)
-AST	Represents code semantically for analysis	In-memory tree
-Code Generator	Emits LLVM IR using LLVM C++ API	LLVM IR text/module
-🏗️ Architecture Overview
-🔹 1. Lexical Analyzer (Lexer)
+---
 
-Performs tokenization of identifiers, numbers, and keywords (func, return, etc.)
+## Overview
 
-Implements skipping of whitespace and comments
+This project implements a complete mini compiler pipeline — from source code to LLVM IR:
 
-Exposes gettok() to feed tokens to the parser
+| Stage              | Description                                | Output                     |
+| ------------------ | ------------------------------------------ | -------------------------- |
+| **Lexer**          | Converts source code into tokens           | Token stream               |
+| **Parser**         | Builds syntax tree using recursive descent | Abstract Syntax Tree (AST) |
+| **AST**            | Represents code semantically for analysis  | In-memory tree             |
+| **Code Generator** | Emits LLVM IR using the LLVM C++ API       | LLVM IR module             |
 
-🔹 2. Parser
+---
 
-Implements recursive descent parsing
+## Architecture Overview
 
-Handles operator precedence for binary operations (+, -, *, /, <)
+### 1. Lexical Analyzer (Lexer)
 
-Builds an Abstract Syntax Tree (AST) representation
+* Performs tokenization of identifiers, numbers, and keywords (`func`, `return`, etc.)
+* Skips whitespace and comments
+* Exposes `gettok()` to feed tokens to the parser
 
-🔹 3. Abstract Syntax Tree (AST)
+### 2. Parser
 
-Implements node classes for NumberExprAST, VariableExprAST, BinaryExprAST, ReturnExprAST, BlockExprAST, and FunctionAST
+* Implements recursive descent parsing
+* Handles operator precedence for binary operations (`+`, `-`, `*`, `/`, `<`)
+* Builds an Abstract Syntax Tree (AST) representation
 
-Uses the Visitor Pattern for clean separation between syntax and code generation
+### 3. Abstract Syntax Tree (AST)
 
-🔹 4. Code Generator (Backend)
+* Defines node classes:
+  `NumberExprAST`, `VariableExprAST`, `BinaryExprAST`, `ReturnExprAST`, `BlockExprAST`, and `FunctionAST`
+* Uses the Visitor Pattern to separate syntax and code generation logic
 
-Uses the LLVM C++ API (llvm::IRBuilder, llvm::Module, llvm::Function, etc.)
+### 4. Code Generator (Backend)
 
-Generates real LLVM IR (not just text)
+* Uses the **LLVM C++ API** (`llvm::IRBuilder`, `llvm::Module`, `llvm::Function`, etc.)
+* Generates real LLVM IR (not just text-based)
+* Produces correct allocations (`alloca`, `store`, `load`) and arithmetic instructions (`fadd`, `fsub`, `fmul`, etc.)
+* Easily extensible to new constructs and data types
 
-Produces correct memory allocations (alloca, store, load) and arithmetic instructions (fadd, fsub, fmul, etc.)
+---
 
-Can be extended to support additional data types and control flow constructs
+## Example Input
 
-🧩 Example Input
+```cpp
 func calculate(x, y) {
     return x + y * 2.5;
 }
+```
 
-🧾 Example LLVM IR Output
+### Corresponding LLVM IR Output
+
+```llvm
 define double @calculate(double %x, double %y) {
 entry:
   %x.addr = alloca double
@@ -63,16 +72,26 @@ entry:
   %3 = fadd double %0, %2
   ret double %3
 }
+```
 
-⚙️ Technologies Used
-Component	Technology
-Language	C++17
-Compiler Backend	LLVM 16+
-Build System	CMake
-Parsing Strategy	Recursive Descent
-Design Pattern	Visitor Pattern
-Target Output	LLVM Intermediate Representation (IR)
-🧱 Project Structure
+---
+
+## Technologies Used
+
+| Component         | Technology                            |
+| ----------------- | ------------------------------------- |
+| Language          | C++17                                 |
+| Compiler Backend  | LLVM 16+                              |
+| Build System      | CMake                                 |
+| Parsing Technique | Recursive Descent                     |
+| Design Pattern    | Visitor Pattern                       |
+| Target Output     | LLVM Intermediate Representation (IR) |
+
+---
+
+## Project Structure
+
+```
 .
 ├── include/
 │   ├── ast.hpp
@@ -88,22 +107,28 @@ Target Output	LLVM Intermediate Representation (IR)
 ├── build/                  # Generated build artifacts
 ├── CMakeLists.txt
 └── README.md
+```
 
-🔧 Dependencies
-🧩 Common
+---
 
-C++17 compiler
+## Dependencies
 
-Linux/macOS → clang++ or g++
+### Common Requirements
 
-Windows → Visual Studio (MSVC) or LLVM’s clang++
+* C++17 compiler
 
-LLVM development libraries
+  * Linux/macOS: `clang++` or `g++`
+  * Windows: MSVC or `clang++`
+* LLVM development libraries
+* CMake ≥ 3.13
 
-CMake ≥ 3.13
+---
 
-💻 Installation & Build Guide
-🐧 Linux (Ubuntu/Debian)
+## Installation and Build Guide
+
+### Linux (Ubuntu/Debian)
+
+```bash
 # 1. Install dependencies
 sudo apt update
 sudo apt install llvm-16 llvm-16-dev clang-16 cmake build-essential
@@ -119,16 +144,21 @@ make
 
 # 4. Run the compiler
 ./my_lang
+```
 
+When prompted:
 
-Then type:
-
+```
 func add(a, b) { return a + b; }
+```
 
+Then press **Ctrl + D** to see the generated LLVM IR.
 
-and press Ctrl+D to see the LLVM IR output.
+---
 
-🍎 macOS
+### macOS
+
+```bash
 # 1. Install dependencies
 brew install llvm cmake
 
@@ -143,9 +173,15 @@ make
 
 # 4. Run
 ./my_lang
+```
 
-🪟 Windows (MSYS2 or Visual Studio)
-Option 1 — Using MSYS2 / MinGW
+---
+
+### Windows
+
+#### Option 1 — Using MSYS2 / MinGW
+
+```bash
 pacman -Syu
 pacman -S mingw-w64-x86_64-clang mingw-w64-x86_64-llvm mingw-w64-x86_64-cmake make git
 
@@ -155,65 +191,81 @@ mkdir build && cd build
 cmake -G "MinGW Makefiles" -DLLVM_DIR="C:/msys64/mingw64/lib/cmake/llvm" ..
 mingw32-make
 ./my_lang.exe
+```
 
-Option 2 — Using Visual Studio
+#### Option 2 — Using Visual Studio
 
-Install Visual Studio 2022 with “Desktop Development with C++”
+1. Install **Visual Studio 2022** with “Desktop Development with C++”
+2. Install **LLVM** from the official release:
+   [https://github.com/llvm/llvm-project/releases](https://github.com/llvm/llvm-project/releases)
+3. Open the **Developer Command Prompt**:
 
-Install LLVM via the official installer
-→ https://github.com/llvm/llvm-project/releases
+   ```cmd
+   mkdir build && cd build
+   cmake -DLLVM_DIR="C:\Program Files\LLVM\lib\cmake\llvm" ..
+   cmake --build . --config Release
+   my_lang.exe
+   ```
 
-Open Developer Command Prompt:
+---
 
-mkdir build && cd build
-cmake -DLLVM_DIR="C:\Program Files\LLVM\lib\cmake\llvm" ..
-cmake --build . --config Release
-my_lang.exe
+## How to Run
 
-🧠 How to Run
+1. Execute the compiler:
 
-Execute the compiler:
+   ```bash
+   ./my_lang
+   ```
+2. Input your function:
 
-./my_lang
+   ```cpp
+   func add(a, b) { return a + b; }
+   ```
+3. End input:
 
+   * Linux/macOS → **Ctrl + D**
+   * Windows → **Ctrl + Z** then **Enter**
+4. The LLVM IR will be printed to the console.
 
-Input your function:
+---
 
-func add(a, b) { return a + b; }
+## Key Compiler Concepts Illustrated
 
+| Concept                       | Implementation                         |
+| ----------------------------- | -------------------------------------- |
+| **Lexical Analysis**          | Tokenization using `gettok()`          |
+| **Recursive Descent Parsing** | Manual grammar rules                   |
+| **Abstract Syntax Tree**      | Object-oriented node hierarchy         |
+| **Visitor Pattern**           | Decouples parsing from code generation |
+| **LLVM IRBuilder**            | Generates real LLVM IR                 |
+| **Semantic Correctness**      | Ensures type-safe operations           |
 
-Press Ctrl + D (Linux/macOS) or Ctrl + Z + Enter (Windows)
+---
 
-LLVM IR output will be printed to the console.
+## Future Enhancements
 
-🧩 Key Compiler Concepts Illustrated
-Concept	Implementation
-Lexical Analysis	Tokenization using gettok()
-Recursive Descent Parsing	Manually written grammar rules
-Abstract Syntax Tree (AST)	Object-oriented node hierarchy
-Visitor Pattern	Clean decoupling of parsing and codegen
-LLVM IRBuilder	Real IR emission via API calls
-Semantic Correctness	Type-safe operations in IR
-🧩 Future Enhancements
+* Add conditional and loop constructs (`if`, `else`, `while`, `for`)
+* Type checking and multiple data types
+* Function calls and scoped variable management
+* Constant folding and optimization passes
+* Integration with `lli` for direct LLVM IR execution
 
-Add conditionals (if, else) and loops (while, for)
+---
 
-Type checking and multi-type support
+## Author
 
-Function calls and variable scopes
+**Kavya Perepu**
+Email: [perepukavyasri@gmail.com](mailto:perepukavyasri@gmail.com)
+LinkedIn: [linkedin.com/in/kavyaperepu](https://linkedin.com/in/kavyaperepu)
+GitHub: [github.com/yourusername](https://github.com/yourusername)
 
-Constant folding and basic optimizations
+---
 
-Integration with lli (LLVM Interpreter) for direct execution
+## License
 
-🧑‍💻 Author
+This project is licensed under the **MIT License**.
+You are free to use, modify, and distribute it with proper attribution.
 
-Kavya Perepu
-📧 perepukavyasri@gmail.com
+---
 
-🌐 LinkedIn
- · GitHub
-
-🧾 License
-
-This project is licensed under the MIT License — you are free to use, modify, and distribute it with attribution.
+Would you like me to add a **“Run and Execute with LLVM Tools”** section next (showing how to pipe your compiler’s IR into `llvm-as` and `lli` to execute code directly, like a real compiler)? It makes your README look research-grade and functional like `clang`.
